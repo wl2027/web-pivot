@@ -1,0 +1,52 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4; /* 背景颜色 */
+    color: #333; /* 字体颜色 */
+    width: 250px; /* 控制面板宽度 */
+    padding: 20px; /* 增加内边距 */
+    box-sizing: border-box; /* 包括内边距和边框 */
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    font-size: 1.5em; /* 增大标题字体 */
+    margin-bottom: 20px; /* 增加标题和按钮组之间的间距 */
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* 按钮之间的间隔 */
+    width: 100%; /* 确保按钮组宽度一致 */
+}
+
+button {
+    background-color: #4CAF50; /* 按钮背景色 */
+    color: white; /* 字体颜色 */
+    border: none; /* 去掉边框 */
+    padding: 12px; /* 增加内填充 */
+    cursor: pointer; /* 鼠标指针效果 */
+    border-radius: 5px; /* 圆角 */
+    transition: background-color 0.3s, transform 0.2s; /* 添加过渡效果 */
+    font-size: 1em; /* 增加字体大小 */
+    width: 100%; /* 按钮宽度填满 */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 添加阴影 */
+}
+
+button:hover {
+    opacity: 0.9; /* 鼠标悬停效果 */
+    transform: scale(1.05); /* 鼠标悬停放大效果 */
+}
+
+#clearContent {
+    background-color: #f44336; /* 红色背景 */
+}
+
+#selectContent1, #selectContent2 {
+    background-color: #4CAF50; /* 绿色背景 */
+}

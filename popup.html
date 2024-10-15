@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title id="title">Web Pivot</title>
+</head>
+<!-- 文本通过 JS 加载 -->
+<body>
+<div class="container">
+    <h1>Web Pivot</h1>
+    <div class="button-group">
+        <button id="selectContent1"></button>
+        <button id="selectContent2"></button>
+        <div style="display: flex; gap: 10px;">
+            <button id="clearContent"></button>
+            <button id="compareContent"></button>
+        </div>
+    </div>
+</div>
+<script src="libs/diff_match_patch.js"></script>
+<script src="libs/htmldiff.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>
