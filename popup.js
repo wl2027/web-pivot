@@ -1,7 +1,9 @@
 let content1 = '';
 let content2 = '';
+let selecting = false; // 选择进行中的标志
 
-let lang = navigator.language.startsWith('zh') ? 'zh' : 'en'; // 检测浏览器语言
+// 引入语言
+let lang = navigator.language.startsWith('zh') ? 'zh' : 'en';
 let translations = {};
 
 // 加载语言文件
@@ -9,7 +11,7 @@ fetch(`locales/${lang}.json`)
     .then(response => response.json())
     .then(data => {
         translations = data;
-        applyTranslations(); // 应用语言
+        applyTranslations();
     });
 
 // 应用国际化文本
@@ -21,22 +23,32 @@ function applyTranslations() {
     document.getElementById('compareContent').textContent = translations.compareContent;
 }
 
-// 初始化时获取存储的选择内容
+// 初始化内容
 chrome.storage.local.get(['selectedElement1', 'selectedElement2'], function (result) {
     content1 = result.selectedElement1 || '';
     content2 = result.selectedElement2 || '';
     updateButtonColors();
 });
 
+// 选择内容1
 document.getElementById('selectContent1').onclick = function () {
-    selectContent('content1');
+    selectContent('content1', 'selectContent1');
 };
 
+// 选择内容2
 document.getElementById('selectContent2').onclick = function () {
-    selectContent('content2');
+    selectContent('content2', 'selectContent2');
 };
 
-function selectContent(contentType) {
+// 执行选择内容的函数
+function selectContent(contentType, buttonId) {
+    if (selecting) return; // 避免重复选择
+    selecting = true;
+
+    const button = document.getElementById(buttonId);
+    button.disabled = true; // 禁用按钮
+    button.style.backgroundColor = '#d3d3d3'; // 置灰效果
+
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         chrome.scripting.executeScript({
             target: { tabId: tabs[0].id },
@@ -51,15 +63,19 @@ function selectContent(contentType) {
 document.getElementById('clearContent').onclick = function () {
     content1 = '';
     content2 = '';
+    selecting = false; // 重置选择标志
     chrome.storage.local.remove(['selectedElement1', 'selectedElement2'], () => {
-        resetButtonColors(); // 清除内容后重置按钮颜色
+        resetButtonColors();
         alert('内容已清除');
     });
 };
 
-// 重置按钮颜色的函数
+// 重置按钮颜色
 function resetButtonColors() {
+    selecting = false; // 允许再次选择
+    document.getElementById('selectContent1').disabled = false; // 启用按钮
     document.getElementById('selectContent1').style.backgroundColor = 'green';
+    document.getElementById('selectContent2').disabled = false; // 启用按钮
     document.getElementById('selectContent2').style.backgroundColor = 'green';
 }
 
@@ -67,9 +83,11 @@ function resetButtonColors() {
 function updateButtonColors() {
     if (content1) {
         document.getElementById('selectContent1').style.backgroundColor = 'blue';
+        document.getElementById('selectContent1').disabled = false; // 启用按钮
     }
     if (content2) {
         document.getElementById('selectContent2').style.backgroundColor = 'blue';
+        document.getElementById('selectContent2').disabled = false; // 启用按钮
     }
 }
 
@@ -80,17 +98,15 @@ document.getElementById('compareContent').onclick = function () {
         return;
     }
 
-    // 调用 HtmlDiff 对比 HTML
     let diffHtml = new HtmlDiff();
     let { oldDiffHtml, newDiffHtml } = diffHtml.diff_launch(content1.html, content2.html);
-
-    // 创建对比弹窗，并展示对比结果
     showComparisonPopup(oldDiffHtml, newDiffHtml);
 };
 
+// 显示对比结果的弹窗
 function showComparisonPopup(oldDiffHtml, newDiffHtml) {
     const comparisonWindow = window.open("", "Comparison", "width=800,height=600");
-    comparisonWindow.document.body.innerHTML = ''; // 清空对比窗口内容
+    comparisonWindow.document.body.innerHTML = ''; 
     comparisonWindow.document.write(`
         <html lang="${lang}">
         <head>
@@ -98,35 +114,35 @@ function showComparisonPopup(oldDiffHtml, newDiffHtml) {
             <style>
                 body {
                     font-family: Arial, sans-serif;
-                    background-color: #ffffff; /* 背景颜色 */
-                    color: #333; /* 字体颜色 */
-                    margin: 20px; /* 增加外边距 */
+                    background-color: #ffffff;
+                    color: #333;
+                    margin: 20px;
                 }
                 h2 {
-                    text-align: center; /* 中心对齐标题 */
+                    text-align: center;
                 }
                 table {
                     width: 100%;
                     border-collapse: collapse;
-                    margin-top: 20px; /* 上方间距 */
-                    font-size: 14px; /* 调整字体大小 */
+                    margin-top: 20px;
+                    font-size: 14px;
                 }
                 th, td {
-                    border: 1px solid #ddd; /* 边框颜色 */
-                    padding: 12px; /* 单元格内填充 */
-                    text-align: left; /* 左对齐 */
+                    border: 1px solid #ddd;
+                    padding: 12px;
+                    text-align: left;
                 }
                 th {
-                    background-color: #f2f2f2; /* 表头背景色 */
-                    color: #333; /* 表头字体颜色 */
+                    background-color: #f2f2f2;
+                    color: #333;
                 }
                 ins {
-                    background-color: #e6ffe6; /* 新增内容背景色 */
-                    color: green; /* 新增内容字体颜色 */
+                    background-color: #e6ffe6;
+                    color: green;
                 }
                 del {
-                    background-color: #ffe6e6; /* 删除内容背景色 */
-                    color: red; /* 删除内容字体颜色 */
+                    background-color: #ffe6e6;
+                    color: red;
                 }
             </style>
         </head>
@@ -141,12 +157,8 @@ function showComparisonPopup(oldDiffHtml, newDiffHtml) {
                 </thead>
                 <tbody>
                     <tr>
-                        <td>
-                            ${oldDiffHtml}
-                        </td>
-                        <td>
-                            ${newDiffHtml}
-                        </td>
+                        <td>${oldDiffHtml}</td>
+                        <td>${newDiffHtml}</td>
                     </tr>
                 </tbody>
             </table>

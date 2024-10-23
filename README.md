@@ -52,12 +52,12 @@ web-pivot 是一个浏览器插件,用于对比两个WEB页面中内容的不同
 
 ### Edge
 
-1. Go to the [Edge Web Store](https://microsoftedge.microsoft.com/addons/Microsoft-Edge-Extensions-Home?hl=zh-CN).
+1. Go to the [Edge Web Store](https://microsoftedge.microsoft.com/addons/detail/webpivot/jcglbllafjedddofacgnkepcedpbnfdb?hl=zh-CN).
 2. Click **Add to Edge**.
 
 ### Chrome
 
-1. Go to the [Chrome Web Store](https://chrome.google.com/webstore/detail/your-extension-id).
+1. Go to the [Chrome Web Store](https://microsoftedge.microsoft.com/addons/detail/webpivot/jcglbllafjedddofacgnkepcedpbnfdb?hl=zh-CN).
 2. Click **Add to Chrome**.
 
 ## Compatibility
